@@ -84,7 +84,7 @@ system(<ptr to 'cat flag'>);
 
 ### **Obstacles**
 - Because of the realloc checks when calling edit, we cannot simply overwrite a content pointer with the address of the GOT entry of `realloc`
-- We're dealing with GLIBC 2.35, which implies safe linking in singly linked lists (tcache & fast bins)
+- We're dealing with GLIBC 2.35, which implies safe linking in singly linked free lists (tcache & fast bins)
 
 ### **Attack Plan**
 - To leak the base of libc :

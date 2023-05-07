@@ -12,8 +12,8 @@ context.terminal = ['terminator','--new-tab','-x']
 # for all created processes...
 # ./exploit.py DEBUG NOASLR
 # ./exploit.py GDB HOST=example.com PORT=4141
-host = args.HOST or '13.37.17.31'
-port = int(args.PORT or 50943)
+host = args.HOST or '51.254.39.184'
+port = int(args.PORT or 1336)
 
 def start_local(argv=[], *a, **kw):
     '''Execute the target binary locally'''

@@ -113,7 +113,7 @@ system(<ptr to 'cat flag'>);
     - overwrite this pointer with a 16 bytes aligned got entry (chunk must be 16 bytes aligned otherwise it will be skipped)
     so that `realloc` is present in the next 32 bytes
     - make tracks until the next suitable choice for a track is our fake chunk
-    - make a new track, its username will overlap with the got. Craft the track name accordingly, so that the `realloc` got entry of malloc now points to `system`
+    - make a new track, its username will overlap with the got. Craft the track name accordingly, so that the `realloc` got entry now points to `system`
     - edit a track whose content starts with `'cat flag.txt'`
     - enjoy your flag
 

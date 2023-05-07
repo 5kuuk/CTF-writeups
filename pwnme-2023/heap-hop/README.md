@@ -3,7 +3,7 @@
 
 ## **TL;DR**
 - Heap menu, you can create,display and create tracks but you cannot delete them
-- I leveraged a heap buffer overflow into a free chunk for tcache poisoning to then overwrite a GOT entry.
+- I leveraged a heap buffer overflow into a free chunk for tcache poisoning to then overwrite a GOT entry
 
 
 ## **Checksec**
@@ -15,7 +15,7 @@
     NX:       NX enabled
     PIE:      No PIE (0x400000)
 ```
-- Partial Relro clearly hints at GOT overwrite.
+- Partial Relro clearly hints at GOT overwrite
 - No PIE so there's no need  to leak the address of the executable
 
 ## **What the bin doing ?**
@@ -119,7 +119,7 @@ system(<ptr to 'cat flag'>);
 
 That's the main idea, but the bulk of the exploit is setting up the heap layout properly by allocating and reallocating chunks so that the layout it is as desired. 
 
-Notably at some point I filled the tcache bin for a given size, chosen bigen enough (avoid fastbins) so that after subsequent allocations and reallocation, leftover content chunks on smaller reallocations would end up in unsorted bin, and be utilized (and split !) even if they don't exactly fit the allocation request. I am unsure if it was strictly necessary, but that's the only way I managed to have them utilized in subsequent allocations.
+Notably at some point I filled the tcache bin for a given size, chosen big enough (avoid fastbins) so that after subsequent allocations and reallocation, leftover content chunks on smaller reallocations would end up in unsorted bin, and be utilized (and split !) even if they don't exactly fit the allocation request. I am unsure if it was strictly necessary, but that's the only way I managed to have them utilized in subsequent allocations.
 
 It's not super interesting so I won't discuss the details here, my heap management is most definitely suboptimal, but anyone interested can have a look at my exploit.
 

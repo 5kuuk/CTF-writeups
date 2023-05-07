@@ -117,7 +117,7 @@ system(<ptr to 'cat flag'>);
     - edit a track whose content starts with `'cat flag.txt'`
     - enjoy your flag
 
-That's the main idea, but the bulk of the exploit is setting up the heap layout properly by allocating and reallocating chunks so that the layout it is as desired. 
+That's the main idea, but the bulk of the exploit is setting up the heap layout properly by allocating and reallocating chunks so that the layout is as desired. 
 
 Notably at some point I filled the tcache bin for a given size, chosen big enough (avoid fastbins) so that after subsequent allocations and reallocation, leftover content chunks on smaller reallocations would end up in unsorted bin, and be utilized (and split !) even if they don't exactly fit the allocation request. I am unsure if it was strictly necessary, but that's the only way I managed to have them utilized in subsequent allocations.
 

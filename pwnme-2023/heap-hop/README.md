@@ -109,7 +109,7 @@ system(<ptr to 'cat flag'>);
 -  GOT overwrite !
     - Have a the content of a track `C` , its size covering that of a track `D`
     - Get  `D`'s `content` to be freed (make sure it cannot be coalesced, by allocating another track for example, and edit it a bigger size)
-    - now a forward pointer from a tcache bin is present under `A`
+    - now a forward pointer from a tcache bin is present under `C`
     - overwrite this pointer with a 16 bytes aligned got entry (chunk must be 16 bytes aligned otherwise it will be skipped)
     so that `realloc` is present in the next 32 bytes
     - make tracks until the next suitable choice for a track is our fake chunk

@@ -102,7 +102,7 @@ system(<ptr to 'cat flag'>);
 - Bypassing safe linking
     - google was a valuable friend here and I learnt that pointers are obfuscated as follows :
 
-        `fd = (actual fd) xor (heap base >> 12)`
+        `fp = (actual fp) xor (heap base >> 12)`
     - with a heap leak, it is trivial to bypass such mitigation
     - just as for the libc leak, we can here read out of bound to leak the `content` pointer of `B` by reading `A` OOB
 

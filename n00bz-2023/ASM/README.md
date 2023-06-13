@@ -87,7 +87,7 @@ If you don't know, on x86-64 systems :
 - the syscall code for `write` is 1
 - file descriptor 0 is `stdin`
 - file descriptor 1 is `stdout`
-- 
+
 What does the executable do ?
 - calls `vuln`
 - vuln firsts calls `write(stdout,"Hello, world!!\n/bin/sh",0xf)` (*note the presence of `/bin/sh\x00` in memory*) which effectively just writes `"Hello, world!!\n"` (15 bytes)

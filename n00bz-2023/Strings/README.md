@@ -71,7 +71,7 @@ io = start()
 io.sendline(b"%37c%9$hhn%78c%10$hhnPPP" + p64(0x404060) + p64(0x404061))
 io.interactive()
 ```
-Essentially we craft our payload to write a number of characters corresponding to `%` and to `s`, and so that these counts are stored in fake_flag (which is at address `0x404060`)
+Essentially we craft our payload to write a number of characters corresponding to `%`(37 in ascii) and to `s`(115=37+78 in ascii), and so that these counts are stored in fake_flag (which is at address `0x404060`)
 - The buffer holding our input can be found on the stack. 
 - It corresponds to the 6th (starting from 0) argument sent to printf (you can figure this out by experimenting with format specifiers or in gdb)
 - `PPP` is used to align our payload

@@ -79,7 +79,7 @@ Essentially we craft our payload to write a number of characters corresponding t
 - prefixing a format specifier by `X$`, where `X` is a number, allows to specify the `X`th argument is used by the current format specifier
 - The `n` format specifier writes to the location pointed by the current argument the number of bytes printed until now by the current `printf` as an int (4 bytes)
 - With `hhn`, we write the number of bytes printed until now by the current `printf` as a single byte
-- `Xc` where `X` is a number, writes `X` times the current argument as a char.
+- `Xc` where `X` is a number, writes the current argument as a char, with padding so as to write `X` bytes.
 
 # Resources
 I looked at the following article as a refresher on format strings attacks:

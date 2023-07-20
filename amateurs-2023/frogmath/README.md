@@ -48,7 +48,7 @@ integer processor
 > 
 ```
 - `load` loads `mm0-mm6` from the buffer on the heap pointed to by `mm7`, then frees and sets `mm7` to `null`.
-- `load` saves `mm0-mm6` to the buffer on the heap pointed to by `mm7` or if `null`, allocates
+- `save` saves `mm0-mm6` to the buffer on the heap pointed to by `mm7` or if `null`, allocates a new buffer
 
 Note that the program logic prevents us from directly setting/getting or doing any operation on mm7 in integer mode
 

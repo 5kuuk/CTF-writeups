@@ -68,7 +68,7 @@ Assuming the fp stack is empty, you push the desired value on the fp stack then 
 Easy right ? *NO !!!*
 
 Info on floating point representation : 
-- [x87 floats]([https://en.wikipedia.org/wiki/Extended_precision](https://en.wikipedia.org/wiki/Extended_precision#x86_extended_precision_format))
+- [x87 floats](https://en.wikipedia.org/wiki/Extended_precision#x86_extended_precision_format)
 - [IEEE 754](https://en.wikipedia.org/wiki/IEEE_754)
 
 `mm7` corresponds to the mantissa of `st7` and the mantissa must almost always start with a msb of 1 which is problematic to store addresses since they have 2 most significant null bytes (the exponent will be decreased, and the mantissa will be shifted to the left and not correspond anymore to our address). It took me a while to find a trick to accomodate for that. In fact, [subnormal numbers](https://en.wikipedia.org/wiki/Subnormal_number), which have an exponent of 1 (but stored as 0), can have leading null most significant bits without being equal to 0. So to store value v in mm7 we need to craft a subnormal number whose mantissa is v.

@@ -57,7 +57,7 @@ Operations on the mmx registers after pushing floating point values moves back t
 
 ## Heap leak
 Since PIE is enabled, we have to start from a leak to somewhere. Luckily it is quite straight forward to leak `mm7`.
-- Push 7 values on the fp stack
+- Push 7 values (`mm7` needs to be null to avoid crash when saving so pushing only 0s gaurantees that)
 - Save mmx registers (`mm7` now holds a heap pointer)
 - Pop 7 times (the stack is now empty so `st0` holds the pointer first stored in `mm7`)
 - Inspect, which will print the pointer

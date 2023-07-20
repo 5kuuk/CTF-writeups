@@ -1,5 +1,5 @@
 # Frog Math
-*or how  80-bit precision floating point drove me crazy*
+*or how  80-bit floating point drove me crazy*
 
 ![](https://github.com/5kuuk/CTF-writeups/blob/main/amateurs-2023/frogmath/solves.jpg)
 

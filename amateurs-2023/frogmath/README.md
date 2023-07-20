@@ -1,7 +1,7 @@
 # Frog Math
 *or how  80-bit precision floating point drove me crazy*
 
-
+![](https://github.com/5kuuk/CTF-writeups/blob/main/amateurs-2023/frogmath/solves.jpg)
 
 ## TL;DR
 We're given a binary with all protections enabled (notably PIE and full RELRO) that allows us to do basic arithmetic in integer mode using mmx registers and floating point mode using x87 registers. The main trick is that on modern x64 processors, mmx registers maps the 64 lsb of the x87 80bit registers. In particular, this program uses mm7 as a pointer to load and save mmx values. We have full control on mm7 by storing carefully crafted floating point numbers and we leverage that for arbitrary read/write.
@@ -47,8 +47,8 @@ integer processor
 9) clear
 > 
 ```
--`load` loads `mm0-mm6` from the buffer on the heap pointed to by `mm7`, then frees and sets `mm7` to `null`.
--`load` saves `mm0-mm6` to the buffer on the heap pointed to by `mm7` or if `null`, allocates
+- `load` loads `mm0-mm6` from the buffer on the heap pointed to by `mm7`, then frees and sets `mm7` to `null`.
+- `load` saves `mm0-mm6` to the buffer on the heap pointed to by `mm7` or if `null`, allocates
 
 Note that the program logic prevents us from directly setting/getting or doing any operation on mm7 in integer mode
 

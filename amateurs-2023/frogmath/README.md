@@ -53,7 +53,7 @@ integer processor
 Note that the program logic prevents us from directly setting/getting or doing any operation on mm7 in integer mode
 
 ### Confusing quirk
-Operations on the mmx registers after pushing floating point values moves back the floating point stack in a circular fashion so that if you set say register `mm0` in integer mode then push a floating point, then switching back to int mode and `get(0)` wont get you the floating point you just pushed but the actual value you set for `mm0` beforehand. However, switching back to floating point won't switch the stack back ! To get a better grasp of this, it's better to see for yourself in gdb. It is the reason why we cannot store an integer in `mm7`, from setting `mm6` and then pushing a dummy float on the stack and have to instead rely on floating points
+Operations on the mmx registers after pushing floating point values moves back the floating point stack in a circular fashion so that if you set say register `mm0` in integer mode then push a floating point, then switching back to int mode and `get(0)` wont get you the floating point you just pushed but the actual value you set for `mm0` beforehand. However, switching back to floating point won't switch the stack back ! To get a better grasp of this, it's better to see for yourself in gdb (use the `i r f` command to print x87 registers). It is the reason why we cannot store an integer in `mm7`, from setting `mm6` and then pushing a dummy float on the stack and have to instead rely on floating points
 
 ## Heap leak
 Since PIE is enabled, we have to start from a leak to somewhere. Luckily it is quite straight forward to leak `mm7`.

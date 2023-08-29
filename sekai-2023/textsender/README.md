@@ -1,6 +1,6 @@
 # Textsender
 ![img](https://github.com/5kuuk/CTF-writeups/blob/main/sekai-2023/textsender/images/double_free_meme.jpg)
-*Many thanks the whole SekaiCTF organizing team and especially Johnathan for designing this really cool challenge*
+*Many thanks to the whole SekaiCTF organizing team and especially Johnathan for designing this really cool challenge*
 
 ## tl;dr
 I flagged this challenge with what I would describe as a [House of Botcake](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_botcake.c) variant leveraging `realloc` in `getline` and an unintended double free,

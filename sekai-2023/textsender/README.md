@@ -231,7 +231,7 @@ We can thus input `"Sender :"` with it.
 Now we need to get into some neat implementation details of `getline`
 I recommand that you have a look at [`_IO_getdelim`](https://elixir.bootlin.com/glibc/glibc-2.32/source/libio/iogetdelim.c#L40) (which is called internally by `getline`) 
 for yourself but here are the key takeaways :
-- if `*lineptr` (buffer) provided is `NULL` or `*size` is `0` (which here is our case here), `*lineptr` is allocated `120` bytes
+- if `*lineptr` is `NULL` or `*size` is `0` (which here is our case here), `*lineptr` is allocated `120` bytes
 - this buffer is continusouly reallocated to the double of its size until it can fit the whole user input.
 - [`realloc`](https://elixir.bootlin.com/glibc/glibc-2.32/source/malloc/malloc.c#L3150)
 will try to extend the current chunk to reallocate if the chunk below it happens to not be in use

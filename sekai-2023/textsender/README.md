@@ -221,7 +221,9 @@ In fact, when sender is freed, it goes into a tcache bin (or fastbin if the tcac
 now contain a (safely linked) null or heap pointer.
 Furthermore, suppose such pointer is reused to hold a (same-sized) `receiver`, then, since scanf disregards whitespaces, you cannot input "Receiver :" and thus the free check still holds.
 
-Regardless, this check is still bypassable, thanks to absolutely coincidental implementation details :D
+Regardless, this check is still bypassable, thanks to absolutely coincidental implementation details 😲
+
+
 First, you should note that `getline` (which is called in `edit_message` to input the receiver's name) does not discard whitespaces, it just stops at (and stores) the terminating newline.
 We can thus input `"Sender :"` with it.
 Now we need to get into some neat implementation details of `getline`
@@ -242,7 +244,7 @@ since this chunk was in tcache range after being extended by realloc,
 when it is double freed an attempt at backwards consolidation will be attempted again, and the `prev_size` vs actual `chunk_size` check will fail :(
 No sweat, we can simply change this size accordingly since it is now contained into a valid chunk.
 
-Now we have all the tools we need 😀
+Now we have all the knowledge we need 😀
 
 ## Exploit
 - allocate 8 messages

@@ -270,7 +270,7 @@ Remember that it is also inside the top chunk right now.
 - do a large fake edit replace both `M->receiver` and `M->content` by GOT `entry` of `free` *(at known location since the executable is not PIE)*
 - print all messages to leak the address of `free` in libc, and use it to compute the address of `system`
 - edit `M` to overwrite the GOT entry of `free` by the address of `system` *(which is writable because of the Partial RELRO)*
-- do a fake edit with receiver name `"/bin/sh"`. When it is subsquently freed, `system("/bin/sh")` is called instead of `free`
+- do a fake edit with receiver name `"/bin/sh"`. When it is subsequently freed, `system("/bin/sh")` is called instead of `free`
 
 ## Flag 😎
 ```

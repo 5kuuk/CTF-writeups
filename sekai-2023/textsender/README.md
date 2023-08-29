@@ -240,8 +240,8 @@ Thus, it can be reused then extended by `getline`, become larger (size > `0x408`
 and not fit in tcache. It will then be elligible for backwards consolidation when subsequently freed, if the above chunk is in unsorted bin.
 Thus, neither the top chunk nor any chunk in free lists will be equal to the sender which we will free again, bypassing double free checks.
 However unlike with [House of Botcake](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_botcake.c),
-since this chunk was in tcache range after being extended by realloc,
-when it is double freed an attempt at backwards consolidation will be attempted again, and the `prev_size` vs actual `chunk_size` check will fail :(
+since this chunk was NOT in tcache range after being extended by realloc,
+when the double free happens backwards consolidation will be attempted again, and the `prev_size` vs actual `chunk_size` check will fail :(
 No sweat, we can simply change this size accordingly since it is now contained into a valid chunk.
 
 Now we have all the knowledge we need 😀

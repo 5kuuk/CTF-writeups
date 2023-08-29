@@ -3,7 +3,7 @@
 *Many thanks the whole SekaiCTF organizing team and especially Jonathan for designing this really cool challenge*
 
 ## tl;dr
-I flagged this challenge with what I would describe as a [House of Botcake](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_botcake.c) variant leveraging `realloc()` in `getline()` and an unintended double free,
+I flagged this challenge with what I would describe as a [House of Botcake](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_botcake.c) variant leveraging `realloc` in `getline` and an unintended double free,
 instead of relying on the intended vulnerabilities to pull off a [House of Einherjar](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_einherjar.c) :P
 
 ## Overview
@@ -79,8 +79,8 @@ void set_sender(void)
 ```
 - You have no control over allocation sizes for messages :
   + a `message` is `16` bytes
-  + the `sender` and a `receiver` are `120` bytes each
-  + a `content` is `504` bytes
+  + the `sender` and a message's `receiver` are `120` bytes each
+  + a message's `content` is `504` bytes
 ```C
 int add_message(message **messages,byte *nb_messages)
 
@@ -234,7 +234,7 @@ will try to extend the current chunk to reallocate if the chunk below it happens
 
 `sender` also happens to be `120` bytes 😏 
 
-Thus, it can be reused then extended by `getline` into a large chunk (size > `0x408` not accounting for `chunk_size`) 
+Thus, it can be reused then extended by `getline`, and become larger (size > `0x408` not accounting for `chunk_size`) 
 which will not fit in tcache and thus will be elligible for backwards consolidation when subsequently freed, if the above chunk is in unsorted bin.
 Thus, neither the top chunk nor any chunk in free lists will be equal to the sender which we will free again, bypassing double free checks.
 However unlike with [House of Botcake](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_botcake.c),
@@ -247,22 +247,29 @@ Now we have all the tools we need 😀
 ## Exploit
 - allocate 8 messages
 - allocate the sender
-- free all of them
+- send all
+
+
 At this point, the tcache bin for size `512` will be full and thus the sender (in tcache bin for size `128`) will be sandwhiched between a `512` sized unsorted bin chunk
 (which was used for the `504` bytes content of the 8th message) and the top chunk
-- allocate `6 messages`, so that the only the freed `sender` is in tcache bin for size `128`
+- allocate `6 messages`, so that the only the `sender` is in tcache bin for size `128`
 - do a 'fake' edit with a large (`> 0x408`) receiver name.
+
+
 No message will actually be edited, but the `sender` chunk will be grabbed by `getline`, then it will be extended using the top chunk.
 When it is then freed again in `edit_message` it will be large enough to be put consolidated back into the top chunk and the unsorted bin chunk above.
 Our freed sender is now into the top chunk, at a known offset.
 - empty free bins by allocating a new message
 - do another large 'fake' edit to set the `sender` chunk size to `0x21` (`0x20` also works since it is in tcache range) and to set the first `8` bytes of `sender` to `"Sender :"`
+- send all **<- DOUBLE FREE HAPPENS HERE**
+- allocate 6 new messages
 - create a new message `M`
-Since when sender is double-freed its size is 0x20, it will be grabbed to store `receiver` and `content` pointers.
+
+Since when the double-free happens the `sender` chunk has size `0x20`, it will be grabbed to store `receiver` and `content` pointers.
 Remember that it is also inside the top chunk right now.
-- do a large fake edit replace both `M->receiver` and `M->content` by the free got `entry` (at known location since the executable is not PIE)
+- do a large fake edit replace both `M->receiver` and `M->content` by GOT `entry` of `free` *(at known location since the executable is not PIE)*
 - print all messages to leak the address of `free` in libc, and use it to compute the address of `system`
-- edit `M` to overwrite the GOT entry of `free` by the address of `system`
+- edit `M` to overwrite the GOT entry of `free` by the address of `system` *(which is writable because of the Partial RELRO)*
 - do a fake edit with receiver name `"/bin/sh"`. When it is subsquently freed, `system("/bin/sh")` is called instead of `free`
 
 ## Flag 😎

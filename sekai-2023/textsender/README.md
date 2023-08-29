@@ -7,7 +7,6 @@ I flagged this challenge with what I would describe as a [House of Botcake](http
 instead of relying on the intended vulnerabilities to pull off a [House of Einherjar](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_einherjar.c) :P
 
 ## Overview
-*You can probably skip this part if you worked on this challenge*
 ### checksec
 ```
     Arch:     amd64-64-little

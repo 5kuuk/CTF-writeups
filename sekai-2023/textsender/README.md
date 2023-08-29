@@ -244,7 +244,7 @@ Thus, neither the top chunk nor any chunk in free lists will be equal to the sen
 However unlike with [House of Botcake](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_botcake.c),
 since this chunk was NOT in tcache range after being extended by realloc,
 when the double free happens backwards consolidation will be attempted again, and the `prev_size` vs actual `chunk_size` check will fail.
-No sweat, we can simply change this size accordingly since it is now contained into a valid chunk.
+No sweat, we can simply change the size of the `sender` chunk accordingly since it is now contained into a valid chunk.
 
 Now we have all the knowledge we need 😀
 

@@ -203,7 +203,9 @@ void send_message(message *messages,byte *nb_messages)
 The intended way to solve this challenge is to use the latter to first leak a heap address
 and then use the first for a House of Einherjar exploit.
 
-However I did not figure out vulnerability `2` during the ctf, and without a heap leak I was unable to leverage vulnerability `1`
+However I did not figure out vulnerability `2` (kudos to the other pwners on discord for letting me know of its existence after the ctf ended), and without a heap leak I was unable to leverage vulnerability `1`.
+
+
 So I looked somewhere else...
 
 ## Unintended vulnerability

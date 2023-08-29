@@ -221,7 +221,7 @@ In fact, when sender is freed, it goes into a tcache bin (or fastbin if the tcac
 now contain a (safely linked) null or heap pointer.
 Furthermore, suppose such pointer is reused to hold a (same-sized) `receiver`, then, since scanf disregards whitespaces, you cannot input "Receiver :" and thus the free check still holds.
 
-Regardless, this check is still bypassable, thanks to absolutely coincidental implementation details 😲
+Regardless, this check is still bypassable, thanks to absolutely coincidental implementation details.
 
 
 First, you should note that `getline` (which is called in `edit_message` to input the receiver's name) does not discard whitespaces, it just stops at (and stores) the terminating newline.
@@ -234,14 +234,14 @@ for yourself but here are the key takeaways :
 - [`realloc`](https://elixir.bootlin.com/glibc/glibc-2.32/source/malloc/malloc.c#L3150)
 will try to extend the current chunk to reallocate if the chunk below it happens to not be in use
 
-`sender` also happens to be `120` bytes 😏 
+`sender` also happens to be `120` bytes.
 
 Thus, it can be reused then extended by `getline`, become larger (size > `0x408` not accounting for `chunk_size`) 
 and not fit in tcache. It will then be elligible for backwards consolidation when subsequently freed, if the above chunk is in unsorted bin.
 Thus, neither the top chunk nor any chunk in free lists will be equal to the sender which we will free again, bypassing double free checks.
 However unlike with [House of Botcake](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_botcake.c),
 since this chunk was NOT in tcache range after being extended by realloc,
-when the double free happens backwards consolidation will be attempted again, and the `prev_size` vs actual `chunk_size` check will fail :(
+when the double free happens backwards consolidation will be attempted again, and the `prev_size` vs actual `chunk_size` check will fail.
 No sweat, we can simply change this size accordingly since it is now contained into a valid chunk.
 
 Now we have all the knowledge we need 😀

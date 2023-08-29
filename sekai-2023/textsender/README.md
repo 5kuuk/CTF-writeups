@@ -236,8 +236,8 @@ will try to extend the current chunk to reallocate if the chunk below it happens
 
 `sender` also happens to be `120` bytes 😏 
 
-Thus, it can be reused then extended by `getline`, and become larger (size > `0x408` not accounting for `chunk_size`) 
-which will not fit in tcache and thus will be elligible for backwards consolidation when subsequently freed, if the above chunk is in unsorted bin.
+Thus, it can be reused then extended by `getline`, become larger (size > `0x408` not accounting for `chunk_size`) 
+and not fit in tcache. It will then be elligible for backwards consolidation when subsequently freed, if the above chunk is in unsorted bin.
 Thus, neither the top chunk nor any chunk in free lists will be equal to the sender which we will free again, bypassing double free checks.
 However unlike with [House of Botcake](https://github.com/shellphish/how2heap/blob/master/glibc_2.32/house_of_botcake.c),
 since this chunk was in tcache range after being extended by realloc,

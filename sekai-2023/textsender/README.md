@@ -272,8 +272,8 @@ Remember that it is also inside the top chunk right now.
 - edit `M` to overwrite the GOT entry of `free` by the address of `system` *(which is writable because of the Partial RELRO)*
 - do a fake edit with receiver name `"/bin/sh"`. When it is subsequently freed, `system("/bin/sh")` is called instead of `free`
 
-## Flag 😎
+## Flag
 ```
 SEKAI{y0U_Kn@W_h0W_tO_c@NduCt_H0uS3_@f_31Nh3rJ4r_43422bb9c023c5a8c37388316956e7c4}
 ```
-
+~~*famous last words* 😛~~

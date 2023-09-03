@@ -12,14 +12,14 @@ void calculate(void)
   long in_FS_OFFSET;
   long local_28;
   long local_20;
-  long local_18;
+  ulong local_18;
   long local_10;
   
   local_10 = *(long *)(in_FS_OFFSET + 0x28);
   __isoc99_sscanf(sum,"{ arg1: %d, arg2: %d}",&local_28,&local_20);
   local_18 = local_20 + local_28;
   printf("The result of the sum is: %d, it\'s over 9000!\n",local_18);
-  if (local_18 == -0x4673a0c8ffffdcd7) {
+  if (local_18 == 0xb98c5f3700002329) {
     puts("That is over 9000 indeed, how did you do that?");
     win();
   }

@@ -93,3 +93,5 @@ We just need to set the part of the string which overlap with a and b accordingl
 However, when leaving a review, we are constrained to only characters whose ascii representation is between that of '_' and that of '~' *(check the [scanf manpage](https://man7.org/linux/man-pages/man3/scanf.3.html) to understand the given format)*.
 
 Thus, we need to generate valid characters for the sum to match, byte by byte. There is an issue with the 0x37 (which itself correspond to a valid char) byte which we cannot compute as a sum of those valid characters. However, since scanf adds a null byte at the end, by leaving a second review, we can insert a null byte at the adequate position in `b`, corresponding at the position of 0x37 in `a` !
+
+*PS : communication using pwntools proved problematic on this challenge, so I generated the payload and then input it manually !*

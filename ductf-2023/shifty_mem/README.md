@@ -5,6 +5,6 @@ chmod +x /tmp/exploit
 ```
 and ran it together with shifty mem :
 ```
-shifty_mem boop & /tmp/exploit && fg 
+shifty_mem boop & /tmp/exploit boop && fg 
 ```
 [how to run 2 programs in parallel](https://stackoverflow.com/questions/3004811/how-do-you-run-multiple-programs-in-parallel-from-a-bash-script)

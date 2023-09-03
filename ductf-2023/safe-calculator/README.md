@@ -1,0 +1,1 @@
+for some reason IO with pwntools was buggy with this challenge so I generated the payload and sent it manually

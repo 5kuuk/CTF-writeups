@@ -1,0 +1,1 @@
+just send -2147483641 = 7 + INT_MIN to bypass checks, then get 7 when cast to short unsigned int

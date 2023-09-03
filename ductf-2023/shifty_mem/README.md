@@ -7,4 +7,4 @@ and ran it together with shifty mem :
 ```
 shifty_mem boop & /tmp/exploit && fg 
 ```
-[how to run 2 program in parallel](https://stackoverflow.com/questions/3004811/how-do-you-run-multiple-programs-in-parallel-from-a-bash-script)
+[how to run 2 programs in parallel](https://stackoverflow.com/questions/3004811/how-do-you-run-multiple-programs-in-parallel-from-a-bash-script)

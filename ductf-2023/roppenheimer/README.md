@@ -98,8 +98,10 @@ void add_atom() {
 This function is the most interesting, because it is vulnerable !
 
 We choose an `atom` key, then all entries of `atoms` in the same bucket (i.e, whose key hashes the same) are copied into the `elems` list, which has only a capacity of 19 pairs !
-We thus have a nice primitive : if we get enough `atoms` keys to hash to the same value, then we can overflow `elems`, which is on the stack, and hijack control flow via ROP !
-But hash collisions are notoriously hard to achieve on proper hash functions...
+
+That's a really nice primitive : if we get enough `atoms` keys to hash to the same value, then we can overflow `elems`, which is on the stack, and hijack control flow via ROP !
+
+But hash collisions are notoriously hard to achieve on properly designed hash functions...
 ```C
 void fire_neutron() {
     unsigned int atom;
@@ -123,7 +125,7 @@ void fire_neutron() {
 }
 ```
 ## The broken default hashing procedure of unordered map
-You guessed it, and so did I during the ctf, the unordered map's hashing has to be a terrible hashing function !
+You guessed it, and so did I during the ctf, the unordered map's default hashing has to be pretty terrible !
 
 A quick google search later, I stumbled onto an [article](https://codeforces.com/blog/entry/62393) on codeforces, which explains how to exploit it.
 Here's what I retained from it :
@@ -133,7 +135,7 @@ Here's what I retained from it :
 
 ### Figuring out `p`
 To figure out `p`, for each `q` in `__prime_list`, we add `32` elements, in `atoms`, such that each key is divisible by `q`, then fire a neuron on one of the `atoms`.
-Note that I limited myself to `q` small enough for its multiples to be in `unsigned int` range !
+Note that I limited myself to `q` small enough for its multiples to be in `unsigned int` range.
 For `p==q`, all atoms will be copied in `elems` whereas only one will be otherwise !
 ```python
 primes = [...]
@@ -161,8 +163,9 @@ Using this procedure, I found that in our case `p==59` works.
 Now, we know how to arrange `atoms` to oveflow `elems` !
 
 ## Caveats
-We are somewhat limited in our ability to ROP because we don't have a big overflow and the elements are arranged depending on the natural sort order of the keys, (and perhaps the order of insertions too). I will spare you the details but I decided to rely on a stack pivot to `username` as a result, and crafted all keys based on the address of `username` to keep the ordering of `elems` fixed. 
-By overflowing, we also set the size of `elems` which determines the number of iterations of the loop in `fire_neuron` so I set it to `2` to avoid a very long sequence of prints 😆.
+We are somewhat limited in our ability to ROP because we don't have a big overflow and the elements are arranged depending on the natural sort order of the keys, (and perhaps the order of insertions as well). I will spare you the details, tl;dr I decided to rely on a stack pivot to `username` as a result, and crafted all keys based on the address of `username` , so as to keep the ordering of `elems` fixed.
+
+By overflowing, we also overwrite `bucket_size` which determines the number of iterations of the loop in `fire_neuron`. I set it to `2` to avoid a very long sequence of prints 😆.
 
 ## Exploit
 - This is the stack pivot I used :

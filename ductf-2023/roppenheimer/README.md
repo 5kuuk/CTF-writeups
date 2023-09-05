@@ -97,7 +97,7 @@ void add_atom() {
 ### fire neutron
 This function is the most interesting, because it is vulnerable !
 
-We choose an `atom` key, then all entries of `atoms` in the same bucket (i.e, whose key hashes to the same value) as it are copied into the `elems` list, which has only a capacity of 19 pairs !
+We choose an `atom` key, then all entries of `atoms` in the same bucket (i.e, whose key hashes the same) are copied into the `elems` list, which has only a capacity of 19 pairs !
 We thus have a nice primitive : if we get enough `atoms` keys to hash to the same value, then we can overflow `elems`, which is on the stack, and hijack control flow via ROP !
 But hash collisions are notoriously hard to achieve on proper hash functions...
 ```C

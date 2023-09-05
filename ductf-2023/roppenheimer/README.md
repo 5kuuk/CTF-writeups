@@ -165,7 +165,7 @@ Now, we know how to arrange `atoms` to oveflow `elems` !
 By overflowing, we also overwrite `bucket_size` which determines the number of iterations of the loop in `fire_neuron`. I set it to `2` to avoid a very long sequence of prints 😆.
 
 ## Exploit
-We are somewhat limited in our ability to ROP because we don't have a big overflow and the elements are arranged depending on the natural sort order of the keys, (and perhaps the order of insertions as well). I will spare you the details, tl;dr I decided to rely on a stack pivot to `username` as a result, and crafted all keys based on the address of `username` , so as to keep the ordering of `elems` fixed.
+We are somewhat limited in our ability to ROP because we don't have a big overflow and the elements are arranged depending on the natural sort order of the keys, (and perhaps the order of insertions as well). I will spare you the details. In short, I decided to rely on a stack pivot to `username` as a result, and crafted all keys based on the address of `username` so as to keep the ordering of `elems` fixed.
 
 - This is the stack pivot I used :
 ```asm

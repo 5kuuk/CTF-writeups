@@ -172,7 +172,7 @@ ret
 ```
 Thus, we need to start our rop chain in `username` by some value that will be popped into `rbp`.
 Here
-- We also control over `rdi` thanks to this neat gadget :
+- We also have control over `rdi` thanks to this neat gadget :
 ```asm
 pop rdi
 pop rbp

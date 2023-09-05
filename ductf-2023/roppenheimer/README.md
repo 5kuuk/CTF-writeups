@@ -72,7 +72,7 @@ An atom is essentially an `unsigned int` key associated to an `uint64_t` value.
 
 We get to choose both, and then the (key,value) pair is added into the global `unordered map` `atoms`.
 
-This map has a maximum capacity of `32` elements.
+We are restricted to `32` elements.
 ```C
 void add_atom() {
     if (atoms.size() >= MAX_ATOMS) {

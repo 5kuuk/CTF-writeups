@@ -122,10 +122,11 @@ void fire_neutron() {
 }
 ```
 ## The broken default hashing procedure of unordered map
-You guessed it, and so did I during the ctf, **the unordered map's hashing has to be a terrible hashing function.**
-A quick google search later, I stumbled onto an [article](https://codeforces.com/blog/entry/62393) on codeforces, which explains all that's needed to solve this challenge.
-What I retained from it is the following :
-- `hash(k) = f(k) mod p` where `f` is some hash function and `p`
+You guessed it, and so did I during the ctf, the unordered map's hashing has to be a terrible hashing function !
+
+A quick google search later, I stumbled onto an [article](https://codeforces.com/blog/entry/62393) on codeforces, which explains how to exploit it.
+Here's what I retained from it :
+- `hash(k) = f(k) mod p` where `f` is some hash function and `p` is some prime
 - by default, `f(k)=k` for some types, including `unsigned int`
 - `p` is dependent on the unsorted map size, but is necessarily one of the primes in [`__prime_list`](https://github.com/gcc-mirror/gcc/blob/5bea0e90e58d971cf3e67f784a116d81a20b927a/libstdc%2B%2B-v3/src/shared/hashtable-aux.cc)
 
@@ -156,7 +157,7 @@ for p in primes:
         io.close()
 ```
 Using this procedure, I found that in our case `p==59` works.
-Now, we can craft `atoms` to oveflow `elems` !
+Now, we know how to arrange `atoms` to oveflow `elems` !
 
 ## Caveats
 We are somewhat limited in our ability to ROP because we don't have a big overflow and the elements are arranged depending on the natural sort order of the keys, (and perhaps the order of insertions too). I will spare you the details but I decided to rely on a stack pivot to `username` as a result, and crafted all keys based on the address of `username` to keep the ordering of `elems` fixed. 
@@ -165,12 +166,20 @@ By overflowing, we also set the size of `elems` which determines the number of i
 ## Exploit
 - This is the stack pivot I used :
 ```asm
-pop rsp; pop rbp; ret
+pop rsp
+pop rbp
+ret
 ```
 Thus, we need to start our rop chain in `username` by some value that will be popped into `rbp`.
 Here
-- We have a `pop rdi; pop rbp; ret` gadget, thus we can leverage it to leak libc using the `plt` and `got` entries of `puts`, as in a classic ret2libc attack
-- Then we go back to main
+- We also control over `rdi` thanks to this neat gadget :
+```asm
+pop rdi
+pop rbp
+ret
+```
+that we can leverage to leak libc using the `plt` and `got` entries of `puts`, as in a classic ret2libc attack
+- We then return to main for some more exploitation 👀
 ```python
 pop_rdi_rbp = 0x4025e0
 pop_rsp_rbp = 0x404ac7

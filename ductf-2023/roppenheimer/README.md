@@ -161,7 +161,7 @@ Now, we know how to arrange `atoms` to oveflow `elems` !
 
 ## Caveats
 We are somewhat limited in our ability to ROP because we don't have a big overflow and the elements are arranged depending on the natural sort order of the keys, (and perhaps the order of insertions too). I will spare you the details but I decided to rely on a stack pivot to `username` as a result, and crafted all keys based on the address of `username` to keep the ordering of `elems` fixed. 
-By overflowing, we also set the size of `elems` which determines the number of iterations of the loop in `fire_neuron` so I set it small enough to avoid a very long sequence of prints 😆.
+By overflowing, we also set the size of `elems` which determines the number of iterations of the loop in `fire_neuron` so I set it to `2` to avoid a very long sequence of prints 😆.
 
 ## Exploit
 - This is the stack pivot I used :

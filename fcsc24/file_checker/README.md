@@ -122,7 +122,7 @@ static void handle(void)
 
 ## Heap Leak with `House of Muney`
  - This parts relies primarily on the `ccs` fopen mode which allows loading and resolving symbols from shared objects despite the `LD_BIND_NOW`
- - As explained [here](https://hugeh0ge.github.io/2019/11/04/), the `ccs` mode allows for custom character sets defined in the `gconv_cache`, loads the corresponding `.so` shared object, resolves and calls `gconv_init`
+ - As explained [here](https://hugeh0ge.github.io/2019/11/04/Getting-Arbitrary-Code-Execution-from-fopen-s-2nd-Argument/), the `ccs` mode allows for custom character sets defined in the `gconv_cache`, loads the corresponding `.so` shared object, resolves and calls `gconv_init`
  - My idea here is to use [House of Muney](https://maxwelldulin.com/BlogPost/House-of-Muney-Heap-Exploitation) on the read-only first page of this `.so` so as to force the symbol resolution of `gconv_init` to some function/code snippet of interest
  - I tried multiple different character sets I found by peeking into the `gconv_cache`, and settled for `"ccs=NC_NC00-10"`, because its corresponding shared object had no newline that could not be replaced during the house of muney attack
     - this was a requirement, as all chunk content, including our remapped and patched page, is sent through `fgets` which stops processing input at the first newline

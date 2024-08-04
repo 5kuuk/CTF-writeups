@@ -269,6 +269,6 @@ root@skuuk-laptop:/home/skuuk/tfc/mcguava# python3 exploit.py HOST=challs.tfcctf
 TFCCTF{gu4v4_ju1c3__1s_th3_4ll__m1ghty_b3v3rage!}
 ```
 
-Thanks Mcsky23 for this cool challenge, allowing to demonstrate this technique :D
+Thanks Mcsky23 for this cool challenge, allowing me to demonstrate this technique :D
 
 

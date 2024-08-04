@@ -147,7 +147,7 @@ Looking at `guava()` and `gius()`, we finally get a sense of what's going on:
 00001534      __stack_chk_fail()
 00001534      noreturn
 ```
-- `guava()` allows us to `malloc()` an entry in the global struct `guava_guis` with a chosen size of at most `0x6ff`, then fill its content, starting at a chosen index
+- `guava()` allows us to `malloc()` an entry in the global struct `guava_guis` with a chosen size of at most `0x6ff`, then fill its content, starting at a chosen offset
 - `guis()` allows us to call `free()` on `guava_guis` entries
     - these are not set to `NULL`, leading to a double free vulnerability
 

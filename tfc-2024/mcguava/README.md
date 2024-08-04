@@ -234,13 +234,13 @@ static struct malloc_par mp_ =
 ## Arbitrary chunk allocation (preparation)
 - One can allocate a chunk, free it to unsorted bin, then allocate it again and use a partial overwrite to get a libc pointer to a desired location. For example, one can set a pointer to point above `_IO_2_1_stdout_`, with 4 bits bruteforce
     - Note that it is important for this brute to be consistent with the later 4 bits brute to `mp_`
-- This can be done multiple time by splitting the unsorted bin chunk.
+- This can be done multiple times by splitting the unsorted bin chunk.
 - In this case I did it twice so as to leak libc via `stdout` overwrite.
 
 ## Large bin attack
 - Using the double free vulnerability and careful feng shui, one can overlap a large bin entry with an unsorted bin entry
 - Then, set its `bk_nextsize` to an `main_arena` pointer (`bk` pointer of an unsorted bin entry), then leverage a partial `2` bytes overwrite (4bits bruteforce) to make it point to `&(mp_->tcache_bins)-0x20`
-- Freeing a smaller chunk that targets the same large bin as our previous large bin chunk will trigger the attack and set `mp_->tcache_bins`
+- Putting a smaller chunk that targets the same large bin as our previous large bin chunk will trigger the attack and set `mp_->tcache_bins`
 
 ## Arbitrary allocation
 - Freeing chunks of the proper size (e.g `0x20` or `0x30`) to set the `tcache->counts` to be non-zero

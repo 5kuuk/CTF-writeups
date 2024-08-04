@@ -3,7 +3,7 @@
 **TL;DR**: 
 - Leakless double free exploitation on libc 2.39
 - Presenting a novel alternative to House of Water:
-    - large bin attack on `mp_->tcache_bins` (4 bits bruteforce) so that fake tcache entries for sizes greater than `0x410` are overlapped with a controlled heap chunk
+    - large bin attack on `mp_.tcache_bins` (4 bits bruteforce) so that fake tcache entries for sizes greater than `0x410` are overlapped with a controlled heap chunk
     - leading to arbitrary allocations via partial overwrite
 
 
@@ -239,8 +239,8 @@ static struct malloc_par mp_ =
 
 ## Large bin attack
 - Using the double free vulnerability and careful feng shui, one can overlap a large bin entry with an unsorted bin entry
-- Then, set its `bk_nextsize` to an `main_arena` pointer (`bk` pointer of an unsorted bin entry), then leverage a partial `2` bytes overwrite (4bits bruteforce) to make it point to `&(mp_->tcache_bins)-0x20`
-- Putting a smaller chunk that targets the same large bin as our previous large bin chunk will trigger the attack and set `mp_->tcache_bins`
+- Then, set its `bk_nextsize` to an `main_arena` pointer (`bk` pointer of an unsorted bin entry), then leverage a partial `2` bytes overwrite (4bits bruteforce) to make it point to `&(mp_.tcache_bins)-0x20`
+- Putting a smaller chunk that targets the same large bin as our previous large bin chunk will trigger the attack and set `mp_.tcache_bins`
 
 ## Arbitrary allocation
 - Freeing chunks of the proper size (e.g `0x20` or `0x30`) to set the `tcache->counts` to be non-zero

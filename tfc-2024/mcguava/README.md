@@ -7,7 +7,7 @@
     - leading to arbitrary allocations via partial overwrite
 
 **20.06.2025 IMPORTANT NOTE**
-- The technique I present here is extremely similar to the intended of the following challenge https://github.com/tj-oconnor/cyber-open-2022/blob/main/pwn/house/Solution.pdf, which is much older.
+- The technique I present here is extremely similar to the intended of the following challenge https://github.com/tj-oconnor/cyber-open-2022/blob/main/pwn/house/Solution.pdf by LMS, which is a much older challenge (from 2022!)
 - The main difference is that the technique I present achieves the large bin attack targetting `mp_.tcache_bins` without a libc leak, whereas the above needs one
 
 

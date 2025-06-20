@@ -6,6 +6,10 @@
     - large bin attack on `mp_.tcache_bins` (4 bits bruteforce) so that fake tcache entries for sizes greater than `0x410` are overlapped with a controlled heap chunk
     - leading to arbitrary allocations via partial overwrite
 
+**20.06.2025 IMPORTANT NOTE**
+- The technique I present here is extremely similar to the intended of the following challenge https://github.com/tj-oconnor/cyber-open-2022/blob/main/pwn/house/Solution.pdf, which is much older.
+- The main difference is that the technique I present achieves the large bin attack targetting `mp_.tcache_bins` without a libc leak, whereas the above needs one
+
 
 ## Protections
 We are provided with the executable and the Dockerfile on which it runs on remote
@@ -45,7 +49,7 @@ muava mus or muava guava? simi gus
 ```
 Let's decompile the executable in binary ninja to get a better sense of what's going on
 
-
+https://discord.com/channels/1376906927195422741/1376938565816291508
 Firstly, the main function
 ```c
 0000153b  int32_t main(int32_t argc, char** argv, char** envp)

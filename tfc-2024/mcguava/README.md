@@ -49,7 +49,6 @@ muava mus or muava guava? simi gus
 ```
 Let's decompile the executable in binary ninja to get a better sense of what's going on
 
-https://discord.com/channels/1376906927195422741/1376938565816291508
 Firstly, the main function
 ```c
 0000153b  int32_t main(int32_t argc, char** argv, char** envp)
